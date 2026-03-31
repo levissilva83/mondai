@@ -6828,9 +6828,16 @@
                     </div>
 
                     <!-- Painel Nova Aula (slide-in) -->
-                    <div id="cronoNewAulaPanel" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9000;background:var(--adm-bg-card);border-top:1px solid var(--adm-border);border-radius:16px 16px 0 0;box-shadow:0 -8px 32px rgba(0,0,0,0.4);max-height:88vh;flex-direction:column;">
+                    <!-- Overlay escuro ao abrir painel Nova Aula -->
+                    <div id="cronoAulaOverlay" onclick="closeCronoNewAulaPanel()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9099;"></div>
+
+                    <div id="cronoNewAulaPanel" style="display:none;position:fixed;bottom:60px;left:0;right:0;z-index:9100;background:var(--adm-bg-card);border:2px solid var(--adm-border);border-radius:18px 18px 0 0;box-shadow:0 -8px 40px rgba(0,0,0,0.6);max-height:75vh;flex-direction:column;">
+                        <!-- Handle visual -->
+                        <div style="flex-shrink:0;display:flex;justify-content:center;padding:8px 0 0;">
+                            <div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.15);"></div>
+                        </div>
                         <!-- Header fixo -->
-                        <div style="flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--adm-border);">
+                        <div style="flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:10px 16px 10px;border-bottom:1px solid var(--adm-border);">
                             <div style="font-size:14px;font-weight:800;color:var(--adm-text-1);">📚 Nova Aula</div>
                             <button onclick="closeCronoNewAulaPanel()" style="width:28px;height:28px;border-radius:50%;background:var(--adm-bg-elevated);color:var(--adm-text-2);border:1px solid var(--adm-border);cursor:pointer;font-size:14px;">✕</button>
                         </div>
@@ -6857,16 +6864,16 @@
                                     <input type="text" id="cronoAdmTema" placeholder="Ex: Guarda De La Riva" style="width:100%;box-sizing:border-box;padding:10px 8px;background:var(--adm-bg-elevated);color:var(--adm-text-1);border:1px solid var(--adm-border);border-radius:8px;font-size:13px;">
                                 </div>
                             </div>
-                            <!-- Técnicas -->
-                            <div style="margin-bottom:10px;">
+                            <!-- Descrição -->
+                            <div style="margin-bottom:6px;">
                                 <label style="font-size:10px;color:var(--adm-text-3);font-weight:600;display:block;margin-bottom:4px;">Descrição</label>
                                 <textarea id="cronoAdmDesc" placeholder="Detalhes da aula..." rows="3" style="width:100%;box-sizing:border-box;padding:10px 8px;background:var(--adm-bg-elevated);color:var(--adm-text-1);border:1px solid var(--adm-border);border-radius:8px;font-size:13px;resize:none;font-family:inherit;"></textarea>
                             </div>
                         </div>
-                        <!-- Footer fixo com botão Salvar -->
-                        <div style="flex-shrink:0;padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom, 0px));border-top:1px solid var(--adm-border);background:var(--adm-bg-card);">
-                            <button onclick="saveCronogramaAula()" id="cronoAdmSaveBtn" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--adm-primary),var(--adm-primary-bright));color:#000;border:none;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer;">📚 Salvar Aula(s)</button>
-                            <div id="cronoAdmMsg" style="margin-top:6px;text-align:center;font-size:12px;"></div>
+                        <!-- Footer fixo com botão Salvar — sempre visível acima do bnav -->
+                        <div style="flex-shrink:0;padding:10px 16px 14px;border-top:1px solid var(--adm-border);background:var(--adm-bg-card);">
+                            <button onclick="saveCronogramaAula()" id="cronoAdmSaveBtn" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--adm-primary),var(--adm-primary-bright));color:#000;border:none;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer;letter-spacing:0.3px;">📚 Salvar Aula(s)</button>
+                            <div id="cronoAdmMsg" style="margin-top:8px;text-align:center;font-size:12px;"></div>
                         </div>
                     </div>
                     <!-- Aniversariantes -->
@@ -7536,7 +7543,10 @@
                                 <option value="Padrão">📌 Padrão (todos os CTs)</option>
                             </select>
                         </div>
-                        <div id="gradConfigGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+
+                        <!-- Adultos -->
+                        <div style="font-size:10px;font-weight:800;color:var(--adm-text-3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">🥋 Adultos</div>
+                        <div id="gradConfigGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
                             <div class="grad-cfg-item">
                                 <label style="font-size:11px;color:var(--adm-text-3);margin-bottom:4px;display:block;">⚪ Branca (aulas/grau)</label>
                                 <input type="number" id="gradCfgBranca" min="1" max="999" value="30" style="width:100%;padding:8px;background:var(--adm-bg-elevated);color:var(--adm-text-1);border:1px solid var(--adm-border);border-radius:6px;font-size:14px;font-weight:700;text-align:center;">
@@ -7554,8 +7564,30 @@
                                 <input type="number" id="gradCfgMarrom" min="1" max="999" value="130" style="width:100%;padding:8px;background:var(--adm-bg-elevated);color:var(--adm-text-1);border:1px solid var(--adm-border);border-radius:6px;font-size:14px;font-weight:700;text-align:center;">
                             </div>
                         </div>
-                        <div style="margin-top:8px;padding:8px;background:rgba(20,184,166,0.05);border:1px dashed rgba(20,184,166,0.2);border-radius:8px;">
-                            <div style="font-size:10px;color:var(--adm-text-3);margin-bottom:4px;">📊 Resumo: total de aulas para exame de faixa (4 graus)</div>
+
+                        <!-- Kids -->
+                        <div style="font-size:10px;font-weight:800;color:var(--adm-text-3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">🧒 Kids</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+                            <div class="grad-cfg-item">
+                                <label style="font-size:11px;color:var(--adm-text-3);margin-bottom:4px;display:block;">🔘 Cinza (aulas/grau)</label>
+                                <input type="number" id="gradCfgKidsCinza" min="1" max="999" value="20" style="width:100%;padding:8px;background:var(--adm-bg-elevated);color:var(--adm-text-1);border:1px solid var(--adm-border);border-radius:6px;font-size:14px;font-weight:700;text-align:center;">
+                            </div>
+                            <div class="grad-cfg-item">
+                                <label style="font-size:11px;color:var(--adm-text-3);margin-bottom:4px;display:block;">🟡 Amarela (aulas/grau)</label>
+                                <input type="number" id="gradCfgKidsAmarela" min="1" max="999" value="25" style="width:100%;padding:8px;background:var(--adm-bg-elevated);color:var(--adm-text-1);border:1px solid var(--adm-border);border-radius:6px;font-size:14px;font-weight:700;text-align:center;">
+                            </div>
+                            <div class="grad-cfg-item">
+                                <label style="font-size:11px;color:var(--adm-text-3);margin-bottom:4px;display:block;">🟠 Laranja (aulas/grau)</label>
+                                <input type="number" id="gradCfgKidsLaranja" min="1" max="999" value="30" style="width:100%;padding:8px;background:var(--adm-bg-elevated);color:var(--adm-text-1);border:1px solid var(--adm-border);border-radius:6px;font-size:14px;font-weight:700;text-align:center;">
+                            </div>
+                            <div class="grad-cfg-item">
+                                <label style="font-size:11px;color:var(--adm-text-3);margin-bottom:4px;display:block;">🟢 Verde (aulas/grau)</label>
+                                <input type="number" id="gradCfgKidsVerde" min="1" max="999" value="35" style="width:100%;padding:8px;background:var(--adm-bg-elevated);color:var(--adm-text-1);border:1px solid var(--adm-border);border-radius:6px;font-size:14px;font-weight:700;text-align:center;">
+                            </div>
+                        </div>
+
+                        <div style="margin-top:4px;padding:8px;background:rgba(20,184,166,0.05);border:1px dashed rgba(20,184,166,0.2);border-radius:8px;">
+                            <div style="font-size:10px;color:var(--adm-text-3);margin-bottom:4px;">📊 Resumo adultos: total de aulas para exame de faixa (4 graus)</div>
                             <div id="gradCfgSummary" style="font-size:11px;color:var(--adm-text-2);"></div>
                         </div>
                         <div id="gradConfigMsg" style="margin-top:8px;"></div>
@@ -14697,10 +14729,14 @@
                 }
             }
             document.getElementById('cronoNewAulaPanel').style.display = 'flex';
+            var ov = document.getElementById('cronoAulaOverlay');
+            if (ov) ov.style.display = 'block';
         }
 
         function closeCronoNewAulaPanel() {
             document.getElementById('cronoNewAulaPanel').style.display = 'none';
+            var ov = document.getElementById('cronoAulaOverlay');
+            if (ov) ov.style.display = 'none';
             _cronoNewAulaMode = false;
             // Voltar ao modo agenda: manter só 1 data (a última selecionada)
             if (_admCronoSelectedDates.length > 1) {
