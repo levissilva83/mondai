@@ -7840,7 +7840,7 @@
                         </div>
                         <div class="stu-days-hint" id="stuDiasHint"></div>
                     </div>
-                    <div class="stu-toggle-row">
+                    <div class="stu-toggle-row" id="stuAdminRow">
                         <div class="stu-toggle-label">🛡️ Administrador / Professor</div>
                         <div class="stu-toggle" id="stuAdminToggle" onclick="onStuAdminToggle()"></div>
                     </div>
@@ -8134,7 +8134,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYSCJFgMLWdD56OlFnXuQq2MlhmCGZSs9VGUcm1wzuieSqn1LSNzcW2m3TpFM6q5fL/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYdflbaeraL34CYjfo3tsVDXiDe3lBTuskpHOfgUH688Qcwmo2K1AAthNcBYA0xbTS/exec';
         let currentUser = null;
         let selectedCT = null;
         let allCTs = [];
@@ -19272,9 +19272,13 @@
                 }
             }
 
-            // Admin toggle
+            // Admin toggle — somente admins reais podem ver e alterar
             var toggle = document.getElementById('stuAdminToggle');
+            var adminRow = document.getElementById('stuAdminRow');
             var isAdminUser = s.admin === true || s.admin === 'TRUE';
+            var currentIsRealAdmin = currentUser && (currentUser.admin === true || currentUser.admin === 'TRUE') && !(currentUser.tipoPerfil === 'professor');
+            // Mostra o toggle somente para admins (não professores)
+            if (adminRow) adminRow.style.display = currentIsRealAdmin ? '' : 'none';
             if (isAdminUser) { toggle.classList.add('on'); } else { toggle.classList.remove('on'); }
             renderStuCTSections(s, isAdminUser);
 
@@ -19499,6 +19503,7 @@
             saveBtn.textContent = 'Salvando...';
 
             var isAdminStu = document.getElementById('stuAdminToggle').classList.contains('on');
+            var currentIsRealAdmin = currentUser && (currentUser.admin === true || currentUser.admin === 'TRUE') && !(currentUser.tipoPerfil === 'professor');
 
             // Coleta CTs do professor (se admin) ou CTs liberados (se aluno)
             var ctsdoprof = '';
@@ -19524,7 +19529,6 @@
                 faixa: document.getElementById('stuFaixa').value,
                 grau: document.getElementById('stuGrau').value,
                 ct: document.getElementById('stuCT').value,
-                admin: isAdminStu,
                 nascimento: document.getElementById('stuNascimento').value,
                 genero: document.getElementById('stuGenero').value,
                 profissao: document.getElementById('stuProfissao').value,
@@ -19544,10 +19548,14 @@
                     });
                     return dias.join(',');
                 })(),
-                isProfessor:  isAdminStu,
-                ctsProfessor: ctsdoprof,
+                isProfessor:  currentIsRealAdmin ? isAdminStu : undefined,
+                ctsProfessor: currentIsRealAdmin ? ctsdoprof : undefined,
                 ctsliberados: ctsliberados
             };
+            // Somente admin real pode alterar status de admin/professor
+            if (currentIsRealAdmin) {
+                payload.admin = isAdminStu;
+            }
 
             try {
                 if (getSessionToken()) payload.token = getSessionToken();
